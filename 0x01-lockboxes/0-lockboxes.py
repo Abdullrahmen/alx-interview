@@ -8,14 +8,20 @@ def canUnlockAll(boxes):
     (indices) to other boxes can be unlocked given that the first
     box is unlocked.
     '''
-    n = len(boxes)
-    seen_boxes = set([0])
-    unseen_boxes = set(boxes[0]).difference(set([0]))
-    while len(unseen_boxes) > 0:
-        boxIdx = unseen_boxes.pop()
-        if not boxIdx or boxIdx >= n or boxIdx < 0:
-            continue
-        if boxIdx not in seen_boxes:
-            unseen_boxes = unseen_boxes.union(boxes[boxIdx])
-            seen_boxes.add(boxIdx)
-    return n == len(seen_boxes)
+    keysNow = {0} | set(boxes[0])
+    newKeys = set()
+    boxesLen = len(boxes)
+    reachedIdx = 0
+    while (reachedIdx != len(keysNow)):
+        for key in keysNow:
+            newKeys.update(set(boxes[key]))
+        reachedIdx = len(keysNow)
+        keysNow.update(newKeys)
+        newKeys = set()
+    ignoreKeys = 0
+    for key in keysNow:
+        if (key >= boxesLen):
+            ignoreKeys += 1
+    if (reachedIdx - ignoreKeys == boxesLen):
+        return True
+    return False
